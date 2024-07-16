@@ -1,5 +1,10 @@
+import controllers.ContaController;
+import views.ContaView;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+
+        ContaController controller = new ContaController();
+        controller.iniciar();
     }
 }
