@@ -10,19 +10,20 @@ public class ProcessoSeletivoViews {
     public double obtemSalarioPretendidoCandidato() {
         Scanner leitura = new Scanner(System.in);
 
-        System.out.println("Digite o seu salario pretendido? ");
-        double salarioPretendido = leitura.nextDouble();
-        return salarioPretendido;
+        System.out.println("Digite o seu salario pretendido: ");
+        return leitura.nextDouble();
     }
 
-
     public void mostrarCandidatosSelecionados(List<Candidato> candidatos) {
-        System.out.println("Candidatos selecionados para entrevista: ");
+        System.out.println("Candidatos selecionados para a entrevista:");
         for (Candidato candidato : candidatos) {
-            System.out.println("Candidato com salario pretendido de: " + candidato.getValorSalarioPretendidoCandidato());
+            System.out.println("Candidato: " + candidato.getNome() + ", Salário Pretendido: " + candidato.getValorSalarioPretendidoCandidato());
         }
     }
 
-
-
+    public void mostrarMensagemContatoCandidatos(List<Candidato> candidatos) {
+        for (Candidato candidato : candidatos) {
+            System.out.println("Candidato: " + candidato.getNome() + " está disponível para contato do RH.");
+        }
+    }
 }

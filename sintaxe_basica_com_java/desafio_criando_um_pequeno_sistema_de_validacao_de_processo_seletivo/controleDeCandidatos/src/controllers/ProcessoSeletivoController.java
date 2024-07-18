@@ -9,7 +9,6 @@ import java.util.List;
 public class ProcessoSeletivoController {
 
     ProcessoSeletivoService processoSeletivoService;
-    Candidato candidato;
     ProcessoSeletivoViews processoSeletivoViews;
 
     public ProcessoSeletivoController() {
@@ -19,11 +18,22 @@ public class ProcessoSeletivoController {
 
     public void verificadorCandidatoCompativel() {
         double salarioPretendido = processoSeletivoViews.obtemSalarioPretendidoCandidato();
-        candidato = new Candidato(salarioPretendido);
+        Candidato candidato = new Candidato(salarioPretendido);
         processoSeletivoService.analisarCandidato(candidato);
     }
+
     public void selecionarCandidatosParaEntrevista() {
-        List<Candidato> candidatosSelecionados = processoSeletivoService.selecionarCandidatosParaEntrevista();
-        processoSeletivoViews.mostrarCandidatosSelecionados(candidatosSelecionados);
+        List<Candidato> selecionados = processoSeletivoService.selecionarCandidatosParaEntrevista();
+        processoSeletivoViews.mostrarCandidatosSelecionados(selecionados);
+    }
+
+    public void imprimirListaCandidatosRH() {
+        List<Candidato> selecionados = processoSeletivoService.selecionarCandidatosParaEntrevista();
+        processoSeletivoViews.mostrarMensagemContatoCandidatos(selecionados);
+    }
+
+    public void tentarContatoComCandidatos() {
+        List<Candidato> selecionados = processoSeletivoService.selecionarCandidatosParaEntrevista();
+        processoSeletivoService.tentarContatoComCandidatos(selecionados);
     }
 }

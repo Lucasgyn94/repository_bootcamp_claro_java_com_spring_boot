@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ProcessoSeletivoService {
 
-    private static final double SALARIO_BASE = 2000.00;
+    private static final double SALARIO_BASE = 2000.00; // Valor base salarial
 
     public void analisarCandidato(Candidato candidato) {
         if (SALARIO_BASE > candidato.getValorSalarioPretendidoCandidato()) {
@@ -21,7 +21,7 @@ public class ProcessoSeletivoService {
     }
 
     public List<Candidato> selecionarCandidatosParaEntrevista() {
-        String[] nomesCandidatos = {"Ana", "Bruno", "Carlos", "Daniel", "Eduardo", "Fernanda", "Gabriela", "Henrique", "Isabela", "João"};
+        String[] nomesCandidatos = {"FELIPE", "MARCIA", "JULIA", "PAULO", "AUGUSTO", "MONICA", "FABRICIO", "MIRELA", "DANIELA"};
         List<Candidato> selecionados = new ArrayList<>();
 
         int candidatosSelecionados = 0;
@@ -34,7 +34,7 @@ public class ProcessoSeletivoService {
             System.out.println("O candidato " + nomeCandidato + " solicitou este valor de salário: " + salarioPretendido);
             if (SALARIO_BASE >= salarioPretendido) {
                 System.out.println("O candidato " + nomeCandidato + " foi selecionado para a vaga.");
-                selecionados.add(new Candidato(salarioPretendido));
+                selecionados.add(new Candidato(nomeCandidato, salarioPretendido));
                 candidatosSelecionados++;
             }
             candidatoAtual++;
@@ -44,5 +44,21 @@ public class ProcessoSeletivoService {
 
     private double valorPretendido() {
         return ThreadLocalRandom.current().nextDouble(1800, 2200);
+    }
+
+    public void tentarContatoComCandidatos(List<Candidato> candidatos) {
+        for (Candidato candidato : candidatos) {
+            boolean conseguiuContato = false;
+            for (int tentativa = 1; tentativa <= 3; tentativa++) {
+                if (ThreadLocalRandom.current().nextBoolean()) {
+                    System.out.println("CONSEGUIMOS CONTATO COM " + candidato.getNome() + " APÓS " + tentativa + " TENTATIVAS");
+                    conseguiuContato = true;
+                    break;
+                }
+            }
+            if (!conseguiuContato) {
+                System.out.println("NÃO CONSEGUIMOS CONTATO COM " + candidato.getNome() + " APÓS 3 TENTATIVAS");
+            }
+        }
     }
 }
