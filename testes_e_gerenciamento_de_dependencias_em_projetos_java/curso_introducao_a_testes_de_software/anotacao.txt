@@ -1,0 +1,68 @@
+=> MODELO CASCATA
+FASES:
+Especificação -> Projeto de Software -> Implementação -> Testes -> Implantação
+
+=> DESENVOLVIMENTO AGIL
+Agile Software Development
+Planejamento -> Desenvolvimento -> Teste e Garantia de Qualidade -> Entrega e Implantação -> Feedback e Melhoria Contínua
+
+=> NÍVEIS DE TESTE
+Unidade -> Integração -> Sistema -> Regressão -> Aceitação
+
+=> TÉCNICAS DE TESTE
+
+-> Caixa Branca
+* Também conhecido como teste estrutural
+* validar dados, controles, fluxos, chamadas
+* Garantir a qualidade da implementação
+Níveis: Unidade, Integração, Regressão
+
+-> Caixa Preta
+* Teste funcional
+* Verificar saídas usando vários tipos de entrada
+* Teste sem conhecer a estrutura interna do software
+* Níveis: Integração, Sistema, Aceitação
+
+-> Caixa Cinza
+* Mescla técnicas de caixa branca e caixa preta
+* Analisa parte lógica e também funcionalidade
+* Exemplo: Ter acesso a documentação do código
+* Engenharia reversa
+
+=> TESTES NÃO FUNCIONAIS
+Testes não funcionais estão ligados a requisitos não funcionais
+* Comportamento do Sistema
+* Perfomancce
+* Escalabilidade
+* Segurança
+* Infraestrutura
+
+Exemplo: "Qual Plataforma o Sistema deverá rodar?"
+
+## EXEMPLOS
+-> Teste de carga
+é realizado para verificar qual o volume de transações, acessos simultâneos ou usuários que um servidor/software/sistema suporta. Alguns pontos de atenção:
+* Objetivos para clareza de resultados
+* Ambiente
+* Cenários
+* Execução de testes
+* Análise de resultado
+
+-> Testes de stress
+é utilizado para submeter o software a situações extreamas. Basicamente, o teste de stress baseia-se em testar os limites do software e avaliar seu comportamento. Assim, avalia-se até quando o software pode ser exigido e quais as falhas (se existirem) decorrentes do teste
+
+-> Testes de segurança
+processp crítico de segurança cibernética que visa detectar vulnerabilidades em sistemas, software, redes e aplicativo
+
+=> PIRÂMIDE DE TESTES
+             /\  
+	    /  \
+	   / UI \ 
+	  / Tests\
+	 /    |   \
+	/  Service \
+       /    Tests   \
+      /       |      \
+     /	   Unit Tests \
+     ------------------
+     
