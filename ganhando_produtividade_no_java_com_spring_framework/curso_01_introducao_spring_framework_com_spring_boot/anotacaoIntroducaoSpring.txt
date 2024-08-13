@@ -1,0 +1,119 @@
+# Spring Framework
+* Framework open sourcce desenvolvido para a plataforma java baseado nos padrões de projetos de controle e injeção de dependência.
+* Estrutura composta por módulo afins de reduzir a complexidade no desenvolvimento de aplicações simples ou corporativa.
+
+## Inversão de controle
+* Inversion of Control ou IoC, trata-se do redirecionamento do fluxo de execução de um códgio retirando parcialmente o controle sobre ele e delegando-o para um container.
+O principal propósito é minimizar o acoplamento do código.
+
+## Injeção de dependências
+* Injeção de dependência é um padrão de desenvolvimento com a finalidade de manter o baixo nível de acoplamento entre módulos de um sistema
+
+## Beans
+Objeto que é instanciado (criado), montado e gerenciado por um container do princípio da inversão de controle
+
+## Singleton
+O container do Spring IoC define apenas uma instância do objeto
+
+## Prototype
+Será criado um novo objeto a cada solicitação ao container
+
+## HTTP - Request
+Um bean será criado para cada requisição HTTP
+
+## HTTP - Session
+Um bean será criado para a sessão de usuário
+
+## HTTP - Global
+Ou Application Scope cria um bean para o ciclo de vida do contexto da aplicação
+
+## Autowired
+Um anotação (indicação) onde deverá ocorrer uma injeção automãtica de dependência.
+
+* byName: É buscado um método set que corresponde ao nome do Bean
+* byType: É considerado o tipo da classe para inclusão do Bean
+* byConstrutor: Usamos o construtor para incluir a dependência
+
+## SpringBoot
+Enquanto que o Spring Framework é baseado no padrão de injeção de dependências, o Springboot foca na configuração automática
+
+## Antes do Springboot
+Desafios com a configuração do projeto:
+* Dependência individual
+* Verbosidade
+* Incompatibilidade de versões
+* Complexidade de gestão
+* Configurações complexas e repetitivas
+
+## Springboot
+Dado que a maior parte das configurações necessárias para o início do projeto são sempre as mesmas, por que não iniciar um projeto com todas estas configurações já definidas?
+
+## Starters
+Benefícios:
+* Coesão
+* Versões compatíveis
+* Otimização do tempo
+* Configuração simples
+* Foco no negócio
+
+## Alguns Starters
+Listagem de alguns startes mais utilizados
+
+Spring-boot-starter-*
+* data-jpa: Integração ao banco de dados via JPA - Hibernate
+* data-mongodb: Interação com banco de dados MongoDB
+* web: inclusão do container Tomcat para aplicação REST
+* web-services: Webservices baseados na arquitetura SOAP.
+* batch: Implementação de JOBs de processos
+* test: Disponibilização de recursos para testes unitários como JUnit
+* openfeign: Client HTTP baseado em interfaces
+* actuator: Gerenciamento de monitoramento de aplicação.
+
+## Quando usar Beans?
+Quando não se tem acesso ao código fonte
+
+## Quando usar componente?
+Quando é uma classe que vai ser provida pelo conceito de injeção de dependências
+
+## Nem tudo é igual
+* O poderoso application.properties
+* @Value
+* Default value
+
+## O QUE É ORM?
+* Object-Relational Mapping, Em português, mapeamento objeto-relacional, é um recurso para aproximar o paradigma da orientação a objetos ao contexto de banco de dados relacional
+
+* O uso de ORM é realizado através do mapeamento de objeto para uma tabela por uma biblioteca ou framework.
+
+## JPA
+JPA é uma especificação baseada em interfaces, que através de um framework realiza operações de persistência de objetos em Java.
+
+## Mapeamento
+Vamos conhecer os aspectos das anotações de mapeamento do JPA
+* Identificação
+* Definição
+* Relacionamento
+* Herança
+* Persistência
+
+## Spring Data JPA
+* Adiciona uma camada sobre o JPA. Isso significa que ele usa todos os recursos definidos pela especificação JPA, especialmente os mapeamentos de entidade e os recursos de persistência baseado em interfaces e anotações. Por isso, o SPring Data JPA adiciona seus próprios recursos, como uma implementação sem código do padrão de repositório e a criação de consultas de banco de dados a partir de nomes de métodos.
+
+### Interfaces
+* CrudRepository
+* JPARepository
+* PagingAndSortingRepository
+
+### Anotações
+* @Query
+* @Param
+
+### Principais métodos do SPring Data Jpa
+* save: insere e atualiza os dados de uma entidade
+* findById: Retorna o objeto localizado pelo seu ID
+* existsById: verifique a existência de um objto pelo ID informado, retornando o boolean
+* findall: retorna uma coleção contendo todos os registros da tabela no banco de dados
+* delete: deleta um registro da respectiva tabela mapeada do banco de dados
+* count: retorna a quantidade de registros de uma tabela mapeada do banco de dados
+
+
