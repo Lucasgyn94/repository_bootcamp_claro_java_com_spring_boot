@@ -1,0 +1,420 @@
+# Introdução
+* Spring Security é apenas um grupo de filtros de servlet que ajudam você a adicionar autenticação e autorização ao seu aplicativo web.
+
+## Terminologia
+* __A autenticação__ refere ao proceso de verificação da identidade de um usuário, com base nas credencias fornecidas. Um exemplo comum é inserir um nome de usuário e uma senha ao fazer login em um site. Você pode pensar nisso como uma resposta à pergunta Quem é você?
+
+* __Autorização__ se refere ao processo de determinar se um usuário tem permissão adequada para executar uma ação específica ou ler dados específicos, supodno que o usuário seja autenticado com êxito. Podemos pensar nisso como uma resposta à pergunta "Um usuário pode fazer / ler isso?"
+
+* __Princípio__ refere-se ao usuário autenticado no momento
+
+* __Autoridade Concedida__ refere-se à permissão do usuário autenticado
+
+* __Função__ refere-se a um grupo de permissões do usuário autenticado
+
+## Habilitando Segurança
+* Em um projeto Spring Boot Web basta somente incluirmos a dependência abaixo ao __pom.xml__:
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+* Quando incluimos esta dependência ao iniciar a aplicação será solicitado um usuário e senha.
+
+* A aplicação pode ser acessada em: 
+http://localhost:8080/ e automaticamente o spring irá redirecionar para tela de login.
+
+## E quais são as credenciais?
+### Default (Padrão)
+* O Spring Security possui um usuário padrão chamado **user** e toda vez que nossa aplicação é iniciada ele gera uma senha aleatória no console
+
+## Autenticao Simples
+* O Spring posui algumas configurações para definir os usuários na sua camada de segurança.
+
+* Como sabemos por padrão o Spring Security habilita um usuário de nome user e gera uma senha aleatoriamente a cada inicialização. Para aplicações em produção esta não é uma abordagem um tanto aconselhável, e é por isso que vamos conhecer algumas outras configurações de segurança.
+
+### No application.properties
+* O Spring Security verifica se existe alguma configuração de segurança no arquivo application.properties
+
+**exemplo**
+spring.security.user.name=user
+spring.security.user.password=user123
+spring.security.user.roles=USERS
+
+## Em memória
+* Esta configuração permite criar mais de um usuário e perfis de acesso
+
+* E necessário criar uma classe que estenda WebSecurityConfigureAdapter conforme abaixo:
+
+
+## Configure Adapter
+* Nos exemplos acima já podemos considerar um nível de segurança em nossa aplicação, mas se percebermos o esforço de configuração para as novas funcionalidades poderá não ser uma abordagem tão satisfatório. Para isso vamos tentar deixar a parte de configuração centralizada na nossa **WebSecurityConfig**, removendo configurações adicionais em nossos **controllers**
+
+* Na classe WebSecurityConfig.java de nosso projeto adicione o método abaixo:
+
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+        .antMatchers("/").permitAll()
+        .antMatchers("/login").permitAll()
+        .antMatchers("/managers").hasAnyRole("MANAGERS")
+        .antMatchers("/users").hasAnyRole("USERS", "MANAGERS")
+        .anyRequest().authenticated().and().formLogin();
+}
+
+
+
+
+
+
+## Sprinb Boot versão 2.xx
+
+<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.18</version>
+		<relativePath/>
+	</parent>
+	
+
+## Auth Database
+* Depois de uma contextualizada simples sobre segurança, hora de explorar novos recursos como interação com banco de dados
+
+* O Spring Boot dispões de uma facilidade para integrar nossa aplicação com banco de dados denominada Spring Data JPA.
+
+__-> Mapeamento__
+/spring-data-jpa/mapeamento
+
+* Adicionando a dependência do Spring Data JPA
+<dependency>
+	<groupId>org.springframework.boot
+	</groupId>
+	<artifactId>spring-boot-starter-data-jpa
+	</artifactId>
+</dependency>	
+
+* Vamos criar a classe User.java:
+
+package me.dio.spring_web_security_database.model;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "tab_user")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_user")
+    private Integer id;
+    @Column(length = 50, nullable = false)
+    private String name;
+    @Column(length = 20, nullable = false)
+    private String username;
+    @Column(length = 100, nullable = false)
+    private String password;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "tab_user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role_id")
+    private List<String> roles = new ArrayList<>();
+
+    public User(){
+
+    }
+    public User(String username){
+        this.username = username;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+}
+
+* Após criaremos um repositório para interagir com a nossa entidade User.java e realizar as operações de CRUD necessárias.
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
+
+    @Query("SELECT e FROM User e JOIN FETCH e.roles WHERE e.username = :username")
+    User findByUsername(@Param("username") String username);
+
+    // Outros métodos do repositório podem ser adicionados aqui, 
+    // como findByEmail, findAll, save, delete, etc.
+}
+
+## USserDetailService
+* A interface UserDetailsService é usada para recuperar dados relacionados ao usuário. Ele possui um método denomidado loadUserByUsername() que pode ser substituído para personalizar o processo de localização do usuário.
+* Vamos criar uma classe SecurityDatabaseService.java que implementará a __UserDetailsService__ para retornar um usuário para contexto de segurança conforme nosso banco de dados.
+
+## WebSecurityConfig
+* Em um contexto de banco de dados a classe WebSecurityConfig.java não contém mais responsabilidade de criar e localizar os usuários, esta ação é delegada ao __UserDetailService__
+
+## Sign Up
+* Agora é hora de dar uma carga inicial de usuários em nossa aplicação
+* Crie a classe StartApplication.java que implementa a interface CommandLineRunner para executar ao iniciar a aplicação
+
+
+import me.dio.spring_web_security_database.model.User;
+import me.dio.spring_web_security_database.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+public class StartApplication implements CommandLineRunner {
+    @Autowired
+    private UserRepository repository;
+    @Transactional
+    @Override
+    public void run(String... args) throws Exception {
+        User user = repository.findByUsername("admin");
+        if(user==null){
+            user = new User();
+            user.setName("ADMIN");
+            user.setUsername("admin");
+            user.setPassword("master123");
+            user.getRoles().add("MANAGERS");
+            repository.save(user);
+        }
+        user = repository.findByUsername("user");
+        if(user ==null){
+            user = new User();
+            user.setName("USER");
+            user.setUsername("user");
+            user.setPassword("user123");
+            user.getRoles().add("USERS");
+            repository.save(user);
+        }
+    }
+}
+
+## Dependência do banco de dados
+* Por fim precisamos adicionar a dependência do banco de dados escolhido.
+
+<dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+</dependency>
+
+## JWT - JSON Web Token
+* Projeto Spring para demonstração do uso de SpringBoot, API Rest, SPring Security com JWT e integração com banco de dados com Spring Data JPA
+
+* O **JSON Web Token - JWT** é um padrão da internet para a criação de dados com assinatura opcional e/ou criptografia cujo conteúdo contém o JSON que afirma algum número de declarações. Os tokens são assinados usando um segredo privado ou uma chave pública/privada.
+
+__Qual a estrutura do JWT?__
+* JWT é uma representação dividida em 3 partes:
+   - Header
+   - Payload
+   - Signature
+
+* Portantu, um JWT normalmente se parece com o seguinte: xxxxx.yyyyy.zzzzz
+
+## Header
+* O header ou cabeçalho normalmente consistem em duas partes: o tipo de token, que é JWT e o algoritmo de assinatura que está sendo utilizado, como HMAC SHA256 ou RSA
+
+{
+	"alg":"HS256",
+	"typ":"JWT"
+}
+
+	
+## Payload
+* E a estrutura de fato contendo as informações de autenticação e autorização de um usuário.
+
+{
+   "sub":"lucasgyn",
+   "name":"Lucas Ferreira",
+   "roles":["USERS", "MANAGERS"]
+}
+
+## Signature
+* Para criar a parte da assinatura, devemos pegar o cabeçalho codificado, o payload codificado, a chave secreta, o algoritmo especificado no cabeçalho e assiná-lo
+
+## SPring + JWT
+* Neste tutorial, desenvolveremos um aplicativo Spring BOot que usa autenticação JWT Para proteger uma API REST. Usaremos um usuário com perfis de acesso para geração e validação do token que é transferido pelos clientes da nossa API.
+
+* Para fazer o desenvolvimento do projeto utilizaremos as seguintes dependências / bibliotecas:
+
+<dependency>
+	<groupId>org.springframework.boot
+	</groupId>
+	<artifactId>spring-boot-starter-data-jpa
+	</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot
+	</groupId>
+	<artifactId>spring-boot-starter-security
+	</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot
+	</groupId>
+	<artifactId>spring-boot-starter-web
+	</artifactId>
+</dependency>
+
+<dependency>
+	<groupId>com.h2database
+	</groupId>
+	<artifactId>h2
+	</artifactId>
+</dependency>
+<!-- JWT -->
+<dependency>
+	<groupId>io.jsonwebtoken
+	</groupId>
+	<artifactId>jjwt
+	</artifactId>
+	<version>0.7.0
+	</version>
+</dependency>
+
+## Estrutura do Projeto
+* Dividimos as classes em pacotes de acordo com suas responsabilidades.
+
+   - pacote **model**: Camada que contém as entidades da aplicação.
+   - pacote **dto**: Camada que contém os dtos da aplicação.
+   - pacote **repository**: Camada que contém os repositórios com base no Spring Data JPA.
+   - pacote **service**: Camada que detém da regra de negócio e comunicação com base de dados via repositorys
+   - pacote **controller**: Camada que contém os recursos https expostos na API
+   - pacote **security**: Camada responsável para toda configuração de segurança
+   
+## Classes utilitárias
+__SwaggerConfig__ : Classe responsável pela documentação da API
+__JWTObject__: Classe que representa um Objeto correspondente a estrutura JWT
+__JWTCreator__: Classe responsável por gerar o Token com base no Objeto e ou instanciar o objeto JWT com base no Token
+
+## COnfigurando o JWT no projeto
+
+* Como sabemos o JWT é um Objeto JSON criptografado, então basta criar uma representação deste objeto e o mecanismo de geração e interpretação do token.
+
+* __security.JWTObject__: Classe que representará um objeto para gerar o token
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+public class JWTObject {
+    private String subject; // nome do usuario
+    private Date issuedAt; // data de criaçao do token
+    private Date expiration;// data de expiraçao da token
+    private List<String> roles; // perfis de acesso
+    
+    // getters e setters
+    
+}
+
+__security.SecurityConfig__: Classe componente que receberá as propriedades e credenciais do token via application.properties.
+
+* security.config.prefix= prefixo do token
+* security.config.key= sua chave privada
+* security.config.expiration=tempo de expiração do token
+
+* No arquivo application.properties deve ser adicionado as seguintes propriedades para o token
+   - security.config.prefix=Beares
+   - security.config.key=SECRET_KEY
+   - security.config.expiration=3600000
+   
+* Após devemos criar a classe __security.JWTCreator__ responsável por gerar o Token com base no Objeto e vice-versa
+
+* __security.JWTFilter__: Classe que possui toda a lógica de validação quanto a integridade do token.
+
+* __security.WebSecurityConfig__: Classe responsável por centralizar toda configuração de segurança da API
+
+* No nosso application.properties devemos adicionar as seguintes propriedades de configuração do Database:
+
+## H2 Database Connection Properties
+
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.url=jdbc:h2:mem:testdb
+
+spring.datasource.username=sa   
+
+spring.datasource.password=sa
+
+spring.jpa.show-sql: true
+spring.h2.console.enabled=true
+
+## Salvando um usuário
+* Para incluir um usuário vamos executar um POST: http://localhost:8080/users passando o json no body conforme conteúdo abaixo:
+
+{
+   "name":"Lucas",
+   "username":"lucasgyn",
+   "password":"jwt123",
+   "roles": ["USERS", "MANAGERS"]
+}
+
+## Gerando o Token
+* Com o nosso usuário devidamente inserido na base de dados é hora de gerar o token com base nos dados passados pelo Login de acesso.
+
+__dto.Login__: Classe que receberá os dados para a realização do Login na aplicação.
+
+public class Login {
+   private String username;
+   private String password;
+   
+   // getters e setters
+}
+
+__dto.Sessao__: Classe que representa uma sessão do sistema contendo o token gerado
+
+public class Sessao{
+   private String login;
+   private String token;
+   
+   // getters e setters
+}
+
+__controller.LoginController__: Esta classe terá o recurso de realizar o login e geração do token
+
+## Testando o Token
+* Vamos criar um serviço no qual precisará validar os dados do token para retornar as respostas abaixo:
+
+__controller.WelcomeController__: Classes com algumas operações de nossa API.
+
+__ENDEREÇO DE UM H2 DATABASE__: http://localhost:8080/h2-console

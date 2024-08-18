@@ -97,7 +97,9 @@ Vamos conhecer os aspectos das anotações de mapeamento do JPA
 * Persistência
 
 ## Spring Data JPA
+* O projeto SPring Data Jpa facilita a implementação do padrão Repository através de AOP (Aspect Oriented Programming - programação orientada a aspectos).
 * Adiciona uma camada sobre o JPA. Isso significa que ele usa todos os recursos definidos pela especificação JPA, especialmente os mapeamentos de entidade e os recursos de persistência baseado em interfaces e anotações. Por isso, o SPring Data JPA adiciona seus próprios recursos, como uma implementação sem código do padrão de repositório e a criação de consultas de banco de dados a partir de nomes de métodos.
+* O repositório seria uma classe para buscar informações no banco de dados ou no local onde as informações foram persistidas. Mas no caso do JpaRepository ele provê a ligação a determinada classe do Model com possiblidade de persistir no banco de dados
 
 ### Interfaces
 * CrudRepository
@@ -109,11 +111,53 @@ Vamos conhecer os aspectos das anotações de mapeamento do JPA
 * @Param
 
 ### Principais métodos do SPring Data Jpa
-* save: insere e atualiza os dados de uma entidade
-* findById: Retorna o objeto localizado pelo seu ID
-* existsById: verifique a existência de um objto pelo ID informado, retornando o boolean
-* findall: retorna uma coleção contendo todos os registros da tabela no banco de dados
-* delete: deleta um registro da respectiva tabela mapeada do banco de dados
-* count: retorna a quantidade de registros de uma tabela mapeada do banco de dados
+* __save__: insere e atualiza os dados de uma entidade
+* __findById__: Retorna o objeto localizado pelo seu ID
+* __existsById__: verifique a existência de um objto pelo ID informado, retornando o boolean
+* __findall__: retorna uma coleção contendo todos os registros da tabela no banco de dados
+* __delete__: deleta um registro da respectiva tabela mapeada do banco de dados
+* __count__: retorna a quantidade de registros de uma tabela mapeada do banco de dados
+
+## Repository Pattern
+* Repository é um padrão similiar ao DAO (Data Access Object) no sentido de que seu objetivo é abstrair o acesso a dados de forma genérica a partir do seu modelo
+
+## Consultas Customizadas
+* Existem duas maneiras de realizar consultas customizadas, uma é conhecindo como QueryMethod e a outra é QueryOverride
+
+### Query Method
+* O SPring Data JPA se encarrega de interpretar a assinatura de um método (nome + parâmetros) para montar a **JPQL** correspodente.
+* No exemplo abaixo temos uma entidade que possui um endereço de email e sobrenome e gostaria de filtrar por estes dois atributos.
+$
+public interface UserRepository extends Repository<User, Long> {
+	
+	List<User> findByEmailAddressAndLastname(String emailAddress, String lastname);
+
+}
+
+Palavra-chave		Exemplo								Trecho JPQL
+Distinct		findDistinctByLastnameAndFirstname				select distinct ... where x.lastname = ?1 and x.firstname = ?2
+And			findByLastnameAndFirstname					... where x.lastname = ?1 and x.firstname = ?2
+Or			findByLastnameOrFirstname					... where x.lastname = ?1 or x.firstname = ?2
+Is, Equals		findByFirstname, findByFirstnameIs, findByFirstnameEquals	... where x.firstname = ?1
+Between			findByStartDateBetween						... where x.startDate between ?1 and ?2
+LessThan		findByAgeLessThan						... where x.age < ? 1
+LessThanEqual		findByAgeLessThanEqual						... where x.age <= ? 1
+GreaterThan		findByAgeGreaterThan						... where x.age > ? 1
+GreaterThanEqual	findByAgeGreaterThanEqual					... where x.age >= ? 1
+
+### Query Override
+* Vamos imaginar que precisamos montar uma query um tanto avançada mas ficaria inviável utilizar o padrão __QueryMethod__? Como nossos repositórios são interfaces não temos implementação de código, é ai que precisar definir a consulta de forma manual através da anotação @Query
+* Os dois métodos realizam a mesma instrução SQL, consultado os usuários pelo seu campo __name__ comparando com o operador LIKE do SQL.
 
 
+public interface UserRepository extends JpaRepository<User, Integer> {
+    // Query Method - Retorna a lista de usuários contendo a parte do name	
+    List<User> findByNameContaining(String name);
+    
+    // Query Override - Retorna a lista de usuários contendo a parte do name	
+    @Query("SELECT u FROM User u WHERE u.name LIKE %:name%")
+    List<User> filtrarPorNome(@Param("name") String name);
+
+    // Query Method - Retorna um usuário pelo campo username
+    User findByUsername(String username);
+}
