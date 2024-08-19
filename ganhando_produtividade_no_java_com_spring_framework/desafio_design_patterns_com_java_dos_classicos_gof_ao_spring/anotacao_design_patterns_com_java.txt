@@ -1,0 +1,27 @@
+## Padrões de Projeto
+* São soluções consolidadas para problemas recorrentes no desenvolcimento e manutenção de software orientado a objetos.
+
+* O livro __Design Patterns: Elements of Reusable Object-Oriented Software__ (1995) é a principal referência sobre o tema, a qual tornos os autores __Gamma__, __Helm__, __Johnson__ e __Vlissides__ conhecidos como __"Gang of Four" (GoF)__
+
+* São comumente classificados nas seguintes categorias:
+   - __Padrões Criacionais__: Abstract Factory, Buider, Factory Method, Prototype, Singleton.
+   - __Padrões Comportamentais__: Chain of Responsibility, Iterator, Observer, Strategy, Template Method.
+   - __Padrões Estruturais__: Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy.
+   
+* Em nosso projeto utilizaremos o padrão criacional __Singleton__, com o Padrão Comportamental __Strategy__ e Padrão Estrutural __Facade__.
+
+## Padrão Criacional Singleton
+* Permitir a criação de uma única instância de uma classe e fornecer um modo para recuperá-la.
+
+## Padrão Comportamental Strategy
+* Simplificar a variação de algoritmos para a resolução de um mesmo problema.
+
+## Padrão Estrutural Facade
+* Prover uma interface que reduza a complexidade nas integrações com subsistemas.
+
+## Spring Framework
+* Explorando alguns padrões de projetos com Spring:
+   - __Singleton__: @Bean e @Autowired;
+   - __Strategy__: @Service e @Repository
+   - __Facade__: Construiremos uma API REST como mesmo objetivo desse padrão, abstrair a complexidade das seguintes integrações: **Spring Data JPA** e **ViaCEP (Feign)**.
+   - Em mémoria (usando o "h2")
