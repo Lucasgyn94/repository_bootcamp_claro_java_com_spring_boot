@@ -1,3 +1,9 @@
 [submodule "ganhando_produtividade_no_java_com_spring_framework/desafio_design_patterns_com_java_dos_classicos_gof_ao_spring/lab-padroes-projeto-spring"]
 	path = ganhando_produtividade_no_java_com_spring_framework/desafio_design_patterns_com_java_dos_classicos_gof_ao_spring/lab-padroes-projeto-spring
 	url = https://github.com/Lucasgyn94/dio-lab-padroes-projeto-spring.git
+[submodule "ganhando_produtividade_no_java_com_spring_framework/desafio_publicando_sua_api_rest_na_nuvem_usando_spring_boot_3_java_e_railway/spring-publicando-api-rest-em-nuvem-java-railway"]
+	path = ganhando_produtividade_no_java_com_spring_framework/desafio_publicando_sua_api_rest_na_nuvem_usando_spring_boot_3_java_e_railway/spring-publicando-api-rest-em-nuvem-java-railway
+	url = https://github.com/Lucasgyn94/spring_publicando_api_rest_em_nuvem_java_and_railway.git
+[submodule "spring-pet-api"]
+	path = spring-pet-api
+	url = https://github.com/Lucasgyn94/spring-pet-api.git
